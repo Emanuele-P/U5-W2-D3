@@ -4,10 +4,7 @@ import ep2024.u5w2d3.entities.BlogPost;
 import ep2024.u5w2d3.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class PostsService {
@@ -18,13 +15,11 @@ public class PostsService {
     }
 
     public BlogPost save(BlogPost body) {
-        Random random = new Random();
-        body.setId((random.nextInt(10000, 99999)));
         this.posts.add(body);
         return body;
     }
 
-    public BlogPost findByID(int id) {
+    public BlogPost findByID(UUID id) {
         BlogPost found = null;
         for (BlogPost post : this.posts) {
             if (post.getId() == id) found = post;
@@ -36,7 +31,7 @@ public class PostsService {
         }
     }
 
-    public BlogPost findByIdAndUpdate(int id, BlogPost updatedPost) {
+    public BlogPost findByIdAndUpdate(UUID id, BlogPost updatedPost) {
         BlogPost found = null;
         for (BlogPost post : this.posts) {
             if (post.getId() == id) {
@@ -55,7 +50,7 @@ public class PostsService {
         }
     }
 
-    public void findByIdAndDelete(int id) {
+    public void findByIdAndDelete(UUID id) {
         Iterator<BlogPost> iterator = this.posts.iterator();
 
         while (iterator.hasNext()) {

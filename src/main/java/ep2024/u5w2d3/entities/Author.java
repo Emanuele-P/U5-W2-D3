@@ -1,21 +1,41 @@
 package ep2024.u5w2d3.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
+@Entity
+@Table(name = "authors")
 @Getter
 @Setter
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "posts")
 public class Author {
-    private int id;
+    @Id
+    @GeneratedValue
+    @Setter(AccessLevel.NONE)
+    private UUID id;
+
     private String name;
     private String surname;
     private String mail;
+    @Column(name = "day_of_birth")
     private LocalDate dayOfBirth;
-    private String avatar;
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    @OneToMany
+    @JoinColumn(name = "author_id")
+    List<BlogPost> posts;
+
+    public Author(String name, String surname, String mail, LocalDate dayOfBirth, String avatarUrl) {
+        this.name = name;
+        this.surname = surname;
+        this.mail = mail;
+        this.dayOfBirth = dayOfBirth;
+        this.avatarUrl = avatarUrl;
+    }
 }
