@@ -3,6 +3,7 @@ package ep2024.u5w2d3.controllers;
 import ep2024.u5w2d3.entities.BlogPost;
 import ep2024.u5w2d3.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,8 @@ public class PostsController {
 
     //GET all http://localhost:3001/posts
     @GetMapping
-    private List<BlogPost> getAllPosts() {
-        return this.postsService.getPosts();
+    private Page<BlogPost> getAllPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.postsService.getPosts(pageNumber, pageSize, sortBy);
     }
 
     //POST http://localhost:3001/posts +body
@@ -32,7 +33,7 @@ public class PostsController {
     //GET one http://localhost:3001/posts/:id
     @GetMapping("/{id}")
     private BlogPost findPostById(@PathVariable UUID id) {
-        return this.postsService.findByID(id);
+        return this.postsService.findById(id);
     }
 
     //PUT http://localhost:3001/posts/:id + body
