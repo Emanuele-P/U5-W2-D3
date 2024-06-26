@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/posts")
@@ -30,20 +31,20 @@ public class PostsController {
 
     //GET one http://localhost:3001/posts/:id
     @GetMapping("/{id}")
-    private BlogPost findPostById(@PathVariable int id) {
+    private BlogPost findPostById(@PathVariable UUID id) {
         return this.postsService.findByID(id);
     }
 
     //PUT http://localhost:3001/posts/:id + body
     @PutMapping("/{id}")
-    private BlogPost findPostByIdAndUpdate(@PathVariable int id, @RequestBody BlogPost body) {
+    private BlogPost findPostByIdAndUpdate(@PathVariable UUID id, @RequestBody BlogPost body) {
         return this.postsService.findByIdAndUpdate(id, body);
     }
 
     //DELETE http://localhost:3001/posts/:id
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void findPostByIdAndDelete(@PathVariable int id) {
+    private void findPostByIdAndDelete(@PathVariable UUID id) {
         this.postsService.findByIdAndDelete(id);
     }
 }

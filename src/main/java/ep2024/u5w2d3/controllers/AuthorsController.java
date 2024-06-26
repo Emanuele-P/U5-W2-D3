@@ -3,10 +3,11 @@ package ep2024.u5w2d3.controllers;
 import ep2024.u5w2d3.entities.Author;
 import ep2024.u5w2d3.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/authors")
@@ -17,8 +18,8 @@ public class AuthorsController {
 
     //GET all http://localhost:3001/authors
     @GetMapping
-    private List<Author> getAllAuthors() {
-        return this.authorService.getAuthors();
+    private Page<Author> getAllAuthors(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.authorService.getAuthors(pageNumber, pageSize, sortBy);
     }
 
     //POST http://localhost:3001/authors +body
@@ -30,20 +31,20 @@ public class AuthorsController {
 
     //GET one http://localhost:3001/authors/:id
     @GetMapping("/{id}")
-    private Author findAuthorById(@PathVariable int id) {
-        return this.authorService.findByID(id);
+    private Author findAuthorById(@PathVariable UUID id) {
+        return this.authorService.findById(id);
     }
 
     //PUT http://localhost:3001/authors/:id + body
     @PutMapping("/{id}")
-    private Author findAuthorByIdAndUpdate(@PathVariable int id, @RequestBody Author body) {
+    private Author findAuthorByIdAndUpdate(@PathVariable UUID id, @RequestBody Author body) {
         return this.authorService.findByIdAndUpdate(id, body);
     }
 
     //DELETE http://localhost:3001/authors/:id
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void findAuthorByIdAndDelete(@PathVariable int id) {
+    private void findAuthorByIdAndDelete(@PathVariable UUID id) {
         this.authorService.findByIdAndDelete(id);
     }
 }

@@ -1,64 +1,56 @@
 package ep2024.u5w2d3.services;
 
 import ep2024.u5w2d3.entities.Author;
+import ep2024.u5w2d3.exceptions.BadRequestException;
 import ep2024.u5w2d3.exceptions.NotFoundException;
+import ep2024.u5w2d3.repositories.AuthorsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class AuthorService {
-    private List<Author> authors = new ArrayList<>();
+   @Autowired
+   private AuthorsRepository authorsRepository;
 
-    public List<Author> getAuthors() {
-        return this.authors;
+    public Page<Author> getAuthors(int pageNumber, int pageSize, String sortBy) {
+        if (pageSize > 20) pageSize = 20;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        return authorsRepository.findAll(pageable);
     }
 
-    public Author save(Author body) {
-        body.setAvatarUrl("https://ui-avatars.com/api/?name=" + body.getName() + body.getSurname());
-        this.authors.add(body);
-        return body;
+    public Author save(Author newAuthor) {
+       this.authorsRepository.findByEmail(newAuthor.getEmail()).ifPresent(
+               author -> {
+                   throw new BadRequestException("The email: " + newAuthor.getEmail() + " is already in use!");
+               }
+       );
+
+       newAuthor.setAvatarUrl("https://ui-avatars.com/api/?name=" + newAuthor.getName() + "+" + newAuthor.getSurname());
+       return authorsRepository.save(newAuthor);
+   }
+
+    public Author findById(UUID authorId) {
+        return this.authorsRepository.findById(authorId).orElseThrow(() -> new NotFoundException(authorId));
     }
 
-    public Author findByID(UUID id) {
-        Author found = null;
-        for (Author author : this.authors) {
-            if (author.getId() == id) found = author;
-        }
-        if (found != null) {
-            return found;
-        } else {
-            throw new NotFoundException(id);
-        }
+    public void findByIdAndDelete(UUID authorId) {
+        Author found = this.findById(authorId);
+        this.authorsRepository.delete(found);
     }
 
-    public Author findByIdAndUpdate(UUID id, Author updatedAuthor) {
-        Author found = null;
-        for (Author author : this.authors) {
-            if (author.getId() == id) {
-                found = author;
-                found.setName((updatedAuthor.getName()));
-                found.setSurname((updatedAuthor.getSurname()));
-                found.setMail((updatedAuthor.getMail()));
-                found.setDayOfBirth((updatedAuthor.getDayOfBirth()));
-                found.setAvatarUrl("https://ui-avatars.com/api/?name=" + updatedAuthor.getName() + updatedAuthor.getSurname());
-            }
-        }
-        if (found != null) {
-            return found;
-        } else {
-            throw new NotFoundException(id);
-        }
-    }
-
-    public void findByIdAndDelete(UUID id) {
-        Iterator<Author> iterator = this.authors.iterator();
-
-        while (iterator.hasNext()) {
-            Author current = iterator.next();
-            if (current.getId() == id) {
-                iterator.remove();
-            }
-        }
+    public Author findByIdAndUpdate(UUID authorId, Author updatedAuthor) {
+        Author found = this.findById(authorId);
+        found.setName(updatedAuthor.getName());
+        found.setSurname(updatedAuthor.getSurname());
+        found.setEmail(updatedAuthor.getEmail());
+        found.setDayOfBirth(updatedAuthor.getDayOfBirth());
+        found.setAvatarUrl("https://ui-avatars.com/api/?name=" + updatedAuthor.getName() + "+" + updatedAuthor.getSurname());
+        return this.authorsRepository.save(found);
     }
 }
