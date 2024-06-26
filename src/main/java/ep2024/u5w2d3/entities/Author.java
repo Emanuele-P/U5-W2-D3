@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "authors")
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = "posts")
 public class Author {
     @Id
@@ -27,11 +26,7 @@ public class Author {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @OneToMany
-    @JoinColumn(name = "author_id")
-    List<BlogPost> posts;
-
-    public Author(String name, String surname, String email, LocalDate dayOfBirth, String avatarUrl) {
+    public Author (String name, String surname, String email, LocalDate dayOfBirth, String avatarUrl) {
         this.name = name;
         this.surname = surname;
         this.email = email;

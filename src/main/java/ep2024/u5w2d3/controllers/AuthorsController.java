@@ -18,8 +18,8 @@ public class AuthorsController {
 
     //GET all http://localhost:3001/authors
     @GetMapping
-    private Page<Author> getAllAuthors(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "id") String sortBy) {
-        return this.authorService.getAuthors(pageNumber, pageSize, sortBy);
+    private Page<Author> getAllAuthors(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.authorService.getAuthors(page, size, sortBy);
     }
 
     //POST http://localhost:3001/authors +body

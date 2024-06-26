@@ -1,9 +1,6 @@
 package ep2024.u5w2d3.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -25,6 +22,10 @@ public class BlogPost {
     private String cover;
     private String content;
     private int readingTime;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 
     public BlogPost(String genre, String title, String cover, String content, int readingTime) {
         this.genre = genre;

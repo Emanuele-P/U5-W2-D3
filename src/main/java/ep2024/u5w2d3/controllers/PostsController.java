@@ -1,5 +1,6 @@
 package ep2024.u5w2d3.controllers;
 
+import ep2024.u5w2d3.entities.BlogPayload;
 import ep2024.u5w2d3.entities.BlogPost;
 import ep2024.u5w2d3.services.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,14 +19,14 @@ public class PostsController {
 
     //GET all http://localhost:3001/posts
     @GetMapping
-    private Page<BlogPost> getAllPosts(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "10") int pageSize, @RequestParam(defaultValue = "id") String sortBy) {
-        return this.postsService.getPosts(pageNumber, pageSize, sortBy);
+    private Page<BlogPost> getAllPosts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.postsService.getPosts(page, size, sortBy);
     }
 
     //POST http://localhost:3001/posts +body
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private BlogPost save(@RequestBody BlogPost body) {
+    private BlogPost save(@RequestBody BlogPayload body) {
         return this.postsService.save(body);
     }
 
@@ -38,7 +38,7 @@ public class PostsController {
 
     //PUT http://localhost:3001/posts/:id + body
     @PutMapping("/{id}")
-    private BlogPost findPostByIdAndUpdate(@PathVariable UUID id, @RequestBody BlogPost body) {
+    private BlogPost findPostByIdAndUpdate(@PathVariable UUID id, @RequestBody BlogPayload body) {
         return this.postsService.findByIdAndUpdate(id, body);
     }
 
